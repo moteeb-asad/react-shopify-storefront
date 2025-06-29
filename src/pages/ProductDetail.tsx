@@ -6,8 +6,7 @@ import { ShopifyProduct } from "../types/shop";
 export default function ProductDetail() {
   const { handle } = useParams<{ handle: string }>();
   const navigate = useNavigate();
-  const { fetchProductByHandle, addItemToShopifyCart, buttonloader } =
-    useShop();
+  const { fetchProductByHandle, addItemToCheckout, buttonloader } = useShop();
   const [product, setProduct] = useState<ShopifyProduct | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +51,7 @@ export default function ProductDetail() {
 
   const handleAddToCart = () => {
     if (product && product.variants?.[selectedVariant]?.id) {
-      addItemToShopifyCart(product.variants[selectedVariant].id, quantity);
+      addItemToCheckout(product.variants[selectedVariant].id, quantity);
     }
   };
 
@@ -128,7 +127,7 @@ export default function ProductDetail() {
                 </Link>
               </li>
               <li className="breadcrumb-item">
-                <Link to="/shop" className="text-decoration-none">
+                <Link to="/" className="text-decoration-none">
                   Shop
                 </Link>
               </li>
@@ -141,7 +140,7 @@ export default function ProductDetail() {
       </div>
 
       {/* Product Detail Section */}
-      <div className="untree_co-section py-5">
+      <div className="untree_co-section py-8">
         <div className="container">
           <div className="row g-5">
             {/* Product Images - Left Column */}
@@ -283,12 +282,25 @@ export default function ProductDetail() {
                       Choose Option:
                     </label>
                     <select
-                      className="form-select form-select-lg"
+                      className="form-select form-select-lg shadow-sm"
                       value={selectedVariant}
                       onChange={(e) =>
                         setSelectedVariant(Number(e.target.value))
                       }
-                      style={{ fontSize: "1rem" }}
+                      style={{
+                        fontSize: "1rem",
+                        borderColor: "#3b5d50",
+                        color: "#3b5d50",
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderColor = "#314d43";
+                        e.currentTarget.style.boxShadow =
+                          "0 0 0 0.2rem rgba(59, 93, 80, 0.25)";
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = "#3b5d50";
+                        e.currentTarget.style.boxShadow = "none";
+                      }}
                     >
                       {product.variants.map((variant, index) => (
                         <option key={variant?.id || index} value={index}>
@@ -310,20 +322,34 @@ export default function ProductDetail() {
                   </label>
                   <div className="d-flex align-items-center">
                     <div
-                      className="input-group me-4"
-                      style={{ maxWidth: "160px" }}
+                      className="input-group shadow-sm"
+                      style={{ maxWidth: "180px" }}
                     >
                       <button
-                        className="btn btn-outline-secondary btn-sm"
+                        className="btn fw-bold text-white"
                         type="button"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        style={{ width: "50px" }}
+                        style={{
+                          width: "50px",
+                          backgroundColor: "#3b5d50",
+                          borderColor: "#3b5d50",
+                          fontSize: "1.2rem",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "#314d43";
+                          e.currentTarget.style.borderColor = "#314d43";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "#3b5d50";
+                          e.currentTarget.style.borderColor = "#3b5d50";
+                        }}
                       >
-                        -
+                        −
                       </button>
                       <input
                         type="number"
-                        className="form-control form-control-lg text-center fw-semibold"
+                        className="form-control form-control-lg text-center fw-bold border-0"
                         value={quantity}
                         onChange={(e) =>
                           setQuantity(
@@ -331,13 +357,42 @@ export default function ProductDetail() {
                           )
                         }
                         min="1"
-                        style={{ fontSize: "1.1rem" }}
+                        style={{
+                          fontSize: "1.2rem",
+                          backgroundColor: "#f8f9fa",
+                          color: "#3b5d50",
+                          boxShadow: "inset 0 1px 3px rgba(0,0,0,0.1)",
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.backgroundColor = "#ffffff";
+                          e.currentTarget.style.boxShadow =
+                            "inset 0 1px 3px rgba(59, 93, 80, 0.2)";
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.backgroundColor = "#f8f9fa";
+                          e.currentTarget.style.boxShadow =
+                            "inset 0 1px 3px rgba(0,0,0,0.1)";
+                        }}
                       />
                       <button
-                        className="btn btn-outline-secondary btn-sm"
+                        className="btn fw-bold text-white"
                         type="button"
                         onClick={() => setQuantity(quantity + 1)}
-                        style={{ width: "50px" }}
+                        style={{
+                          width: "50px",
+                          backgroundColor: "#3b5d50",
+                          borderColor: "#3b5d50",
+                          fontSize: "1.2rem",
+                          transition: "all 0.3s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = "#314d43";
+                          e.currentTarget.style.borderColor = "#314d43";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = "#3b5d50";
+                          e.currentTarget.style.borderColor = "#3b5d50";
+                        }}
                       >
                         +
                       </button>
@@ -349,12 +404,32 @@ export default function ProductDetail() {
                 <div className="product-actions mb-5">
                   <div className="d-flex flex-column flex-sm-row gap-3">
                     <button
-                      className={`btn btn-success btn-lg px-5 py-3 fw-semibold ${
+                      className={`btn btn-lg px-5 py-3 fw-bold text-white shadow ${
                         buttonloader === "active" ? "disabled" : ""
                       }`}
                       onClick={handleAddToCart}
                       disabled={buttonloader === "active"}
-                      style={{ fontSize: "1.1rem", minWidth: "200px" }}
+                      style={{
+                        fontSize: "1.1rem",
+                        minWidth: "200px",
+                        backgroundColor: "#3b5d50",
+                        borderColor: "#3b5d50",
+                        transition: "all 0.3s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        if (buttonloader !== "active") {
+                          e.currentTarget.style.backgroundColor = "#314d43";
+                          e.currentTarget.style.borderColor = "#314d43";
+                          e.currentTarget.style.transform = "translateY(-2px)";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (buttonloader !== "active") {
+                          e.currentTarget.style.backgroundColor = "#3b5d50";
+                          e.currentTarget.style.borderColor = "#3b5d50";
+                          e.currentTarget.style.transform = "translateY(0)";
+                        }
+                      }}
                     >
                       {buttonloader === "active" ? (
                         <>
@@ -373,9 +448,27 @@ export default function ProductDetail() {
                     </button>
                     <Link
                       to="/shop"
-                      className="btn btn-outline-secondary btn-lg px-5 py-3 fw-semibold"
-                      style={{ fontSize: "1.1rem", minWidth: "200px" }}
+                      className="btn btn-lg px-5 py-3 fw-bold shadow text-decoration-none"
+                      style={{
+                        fontSize: "1.1rem",
+                        minWidth: "200px",
+                        backgroundColor: "#f9bf29",
+                        borderColor: "#f9bf29",
+                        color: "#2f2f2f",
+                        transition: "all 0.3s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f8b810";
+                        e.currentTarget.style.borderColor = "#f8b810";
+                        e.currentTarget.style.transform = "translateY(-2px)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f9bf29";
+                        e.currentTarget.style.borderColor = "#f9bf29";
+                        e.currentTarget.style.transform = "translateY(0)";
+                      }}
                     >
+                      <i className="fas fa-arrow-left me-2"></i>
                       Continue Shopping
                     </Link>
                   </div>

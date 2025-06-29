@@ -1,24 +1,29 @@
+/* ============================================
+   GLOBAL FONT SETTINGS
+   ============================================ */
+
 * {
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
   margin: 0;
   font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-/* Custom styles for Product Detail page */
+/* ============================================
+   PRODUCT DETAIL PAGE STYLES
+   ============================================ */
+
+/* Image container animations */
 .image-container {
   background: #f8f9fa;
   transition: all 0.3s ease;
@@ -28,6 +33,7 @@ code {
   transform: scale(1.02);
 }
 
+/* Thumbnail styles */
 .thumbnail-container {
   transition: all 0.3s ease;
   opacity: 0.8;
@@ -42,7 +48,40 @@ code {
   opacity: 1;
 }
 
-/* Responsive improvements */
+/* Product Detail Button Size Reductions */
+.product-actions .btn {
+  font-size: 0.9rem !important;
+  min-width: 150px !important;
+  padding: 0.6rem 1.5rem !important;
+}
+
+.product-quantity .btn {
+  width: 40px !important;
+  font-size: 1rem !important;
+  padding: 0.5rem 0 !important;
+}
+
+.product-quantity .form-control {
+  font-size: 1rem !important;
+  padding: 0.5rem !important;
+}
+
+/* Reduce input group size for quantity controls */
+.product-quantity .input-group {
+  max-width: 140px;
+}
+
+/* Override form-control-lg for quantity input */
+.product-quantity .form-control-lg {
+  padding: 0.5rem !important;
+  font-size: 1rem !important;
+}
+
+/* ============================================
+   RESPONSIVE IMPROVEMENTS
+   ============================================ */
+
+/* Tablet styles */
 @media (max-width: 768px) {
   .product-title {
     font-size: 1.5rem !important;
@@ -71,9 +110,21 @@ code {
   .product-actions .btn {
     width: 100% !important;
     min-width: auto !important;
+    font-size: 0.85rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .product-quantity .btn {
+    width: 35px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .product-quantity .input-group {
+    max-width: 120px;
   }
 }
 
+/* Mobile styles */
 @media (max-width: 576px) {
   .product-title {
     font-size: 1.3rem !important;
@@ -103,9 +154,26 @@ code {
     width: 100% !important;
     margin-bottom: 1rem;
   }
+
+  .product-actions .btn {
+    font-size: 0.8rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+
+  .product-quantity .btn {
+    width: 32px !important;
+    font-size: 0.85rem !important;
+  }
+
+  .product-quantity .input-group {
+    max-width: 110px;
+  }
 }
 
-/* Button improvements */
+/* ============================================
+   ENHANCED BUTTON STYLES
+   ============================================ */
+
 .btn {
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -126,17 +194,26 @@ code {
   transform: translateY(-2px);
 }
 
-/* Form improvements */
-.form-select, .form-control {
+/* ============================================
+   FORM IMPROVEMENTS
+   ============================================ */
+
+.form-select,
+.form-control {
   border-radius: 8px;
   border: 2px solid #e9ecef;
   transition: all 0.3s ease;
 }
 
-.form-select:focus, .form-control:focus {
+.form-select:focus,
+.form-control:focus {
   border-color: #28a745;
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
+
+/* ============================================
+   UI COMPONENT ENHANCEMENTS
+   ============================================ */
 
 /* Badge improvements */
 .badge {
@@ -161,7 +238,10 @@ code {
   color: #6c757d;
 }
 
-/* Utility classes */
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
 .cursor-pointer {
   cursor: pointer !important;
 }
@@ -176,6 +256,10 @@ html {
   box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.08) !important;
 }
 
+/* ============================================
+   IMAGE EFFECTS
+   ============================================ */
+
 /* Image fade-in effect */
 .image-container img {
   transition: opacity 0.3s ease;
@@ -186,7 +270,10 @@ html {
   opacity: 0;
 }
 
-/* Enhanced focus states for accessibility */
+/* ============================================
+   ACCESSIBILITY & FOCUS STATES
+   ============================================ */
+
 .btn:focus,
 .form-control:focus,
 .form-select:focus {
@@ -194,14 +281,20 @@ html {
   box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
 }
 
-/* Responsive text sizes */
+/* ============================================
+   LARGE SCREEN OPTIMIZATIONS
+   ============================================ */
+
 @media (min-width: 1200px) {
   .product-title {
     font-size: 2rem !important;
   }
 }
 
-/* Animation for product loading */
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

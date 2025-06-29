@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { useShop } from "@context/shopContext";
-import PaginatedProducts from "@components/PaginatedProducts";
+import { useShop } from "../context/shopContext";
+import PaginatedProducts from "../components/PaginatedProducts";
 
 export default function Shop() {
-  const { fetchAllShopifyProducts, products } = useShop();
+  const { fetchProducts, products } = useShop();
 
   useEffect(() => {
-    fetchAllShopifyProducts();
+    fetchProducts();
   }, []); // Empty dependency array - only run once on mount
 
   return (

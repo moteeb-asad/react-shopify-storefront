@@ -20,7 +20,7 @@ interface PageClickEvent {
 }
 
 function Products({ currentItems }: ProductsProps) {
-  const { addItemToShopifyCart, buttonloader } = useShop();
+  const { addItemToCheckout, buttonloader } = useShop();
 
   function formatPrice(price: string): string {
     const fixedPrice = Number(price).toFixed(2);
@@ -63,7 +63,7 @@ function Products({ currentItems }: ProductsProps) {
                 className={`icon-cross ${
                   buttonloader === "active" ? "loading" : ""
                 }`}
-                onClick={() => addItemToShopifyCart(product.variants[0]?.id, 1)}
+                onClick={() => addItemToCheckout(product.variants[0]?.id, 1)}
                 style={{ cursor: "pointer" }}
                 title="Add to Cart"
               >

@@ -59,6 +59,91 @@ export interface ShopifyLineItem {
   }[];
 }
 
+export interface ShopifyCart {
+  id: string;
+  webUrl: string;
+  checkoutUrl: string;
+  cost: {
+    totalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
+    subtotalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
+    totalTaxAmount?: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+  createdAt: string;
+  updatedAt: string;
+  lines: ShopifyCartLine[];
+  totalQuantity: number;
+  note?: string;
+  attributes: {
+    key: string;
+    value: string;
+  }[];
+  discountCodes: ShopifyDiscountCode[];
+  estimatedCost: {
+    totalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
+    subtotalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
+    totalTaxAmount?: {
+      amount: string;
+      currencyCode: string;
+    };
+    totalDutyAmount?: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+}
+
+export interface ShopifyCartLine {
+  id: string;
+  quantity: number;
+  merchandise: {
+    id: string;
+    title: string;
+    selectedOptions: {
+      name: string;
+      value: string;
+    }[];
+    product: ShopifyProduct;
+  };
+  cost: {
+    totalAmount: {
+      amount: string;
+      currencyCode: string;
+    };
+    amountPerQuantity: {
+      amount: string;
+      currencyCode: string;
+    };
+    compareAtAmountPerQuantity?: {
+      amount: string;
+      currencyCode: string;
+    };
+  };
+  attributes: {
+    key: string;
+    value: string;
+  }[];
+}
+
+export interface ShopifyDiscountCode {
+  code: string;
+  applicable: boolean;
+}
+
 export interface ShopifyCheckout {
   id: string;
   webUrl: string;
@@ -160,19 +245,18 @@ export interface ShopifyShippingRate {
 
 export interface ShopContextType {
   products: ShopifyProduct[];
-  checkout: ShopifyCheckout;
+  checkout: ShopifyCheckout | null;
   buttonloader: string;
   quantityvalue: number;
   quantityoverlay: boolean;
-  selectedqtyoverlay: string | null;
-  fetchAllShopifyProducts: () => Promise<void>;
+  selectedqtyoverlay: string;
+  fetchProducts: () => Promise<void>;
   fetchProductByHandle: (handle: string) => Promise<ShopifyProduct | null>;
-  addItemToShopifyCart: (variantId: string, quantity: number) => Promise<void>;
-  removeShopifyCartItem: (productID: string[]) => Promise<void>;
-  increment: (itemId: string, qValue: number) => Promise<void>;
-  decrement: (itemId: string) => Promise<void>;
-  addShopifyDiscount: (discountCode: string) => Promise<void>;
-  removeShopifyDiscount: (checkout: ShopifyCheckout) => Promise<void>;
+  addItemToCheckout: (variantId: string, quantity: number) => Promise<void>;
+  removeShopifyCheckoutItem: (lineItemId: string) => Promise<void>;
+  increment: (lineItemId: string, quantity: number) => Promise<void>;
+  decrement: (lineItemId: string, quantity: number) => Promise<void>;
+  removeShopifyDiscount: () => Promise<void>;
   setQuantityValue: (value: number) => void;
 }
 

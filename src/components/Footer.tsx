@@ -13,7 +13,7 @@ export default function Footer() {
             <div className="col-lg-8">
               <div className="subscription-form">
                 <h3 className="d-flex align-items-center">
-                  <span>Shopify Headless CMS With ReactJS</span>
+                  <span>React Shopify Storefront</span>
                 </h3>
               </div>
             </div>

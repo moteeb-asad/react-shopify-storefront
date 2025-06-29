@@ -17,17 +17,18 @@ const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 function ShopProvider({ children }: ShopProviderProps) {
   const [products, setProducts] = useState<ShopifyProduct[]>([]);
-  const [checkout, setCheckout] = useState<ShopifyCheckout>(
-    {} as ShopifyCheckout
-  );
+  const [checkout, setCheckout] = useState<ShopifyCheckout | null>(null);
   const [buttonloader, setButtonLoader] = useState<string>("");
-  const [quantityvalue, setQuantityValue] = useState<number>(0);
+  const [quantityvalue, setQuantityValue] = useState<number>(1);
   const [quantityoverlay, setQuantityOverlay] = useState<boolean>(false);
-  const [selectedqtyoverlay, setSelectedQtyOverlay] = useState<string | null>(
-    null
-  );
+  const [selectedqtyoverlay, setSelectedqtyOverlay] = useState<string>("");
 
   useEffect(() => {
+    // Clean up old cart_id from localStorage (migration from manual Cart API attempt)
+    if (localStorage.cart_id) {
+      localStorage.removeItem("cart_id");
+    }
+
     if (localStorage.checkout_id) {
       fetchCheckout(localStorage.checkout_id);
     } else {
@@ -35,136 +36,180 @@ function ShopProvider({ children }: ShopProviderProps) {
     }
   }, []);
 
-  const createCheckout = async (): Promise<void> => {
-    const checkout = await client.checkout.create();
-    localStorage.setItem("checkout_id", checkout.id);
-    setCheckout(checkout as ShopifyCheckout);
-  };
+  async function createCheckout() {
+    try {
+      console.log("Creating new checkout...");
+      const checkout = await client.checkout.create();
+      localStorage.setItem("checkout_id", checkout.id);
+      setCheckout(checkout);
+      console.log("Checkout created:", checkout);
+    } catch (error) {
+      console.error("Error creating checkout:", error);
+    }
+  }
 
-  const fetchCheckout = async (checkoutId: string): Promise<void> => {
-    client.checkout.fetch(checkoutId).then((checkout: any) => {
-      setCheckout(checkout as ShopifyCheckout);
-    });
-  };
+  async function fetchCheckout(checkoutId: string) {
+    try {
+      console.log("Fetching checkout:", checkoutId);
+      const checkout = await client.checkout.fetch(checkoutId);
+      setCheckout(checkout);
+      console.log("Checkout fetched:", checkout);
+    } catch (error) {
+      console.error("Error fetching checkout:", error);
+      // If fetch fails, create new checkout
+      createCheckout();
+    }
+  }
 
-  const fetchAllProducts = async (): Promise<void> => {
-    const products = await client.product.fetchAll();
-    setProducts(products as ShopifyProduct[]);
-  };
+  async function addItemToCheckout(variantId: string, quantity: number) {
+    setButtonLoader(variantId);
+    try {
+      if (!checkout) {
+        console.log("Checkout not ready, creating new checkout...");
+        await createCheckout();
+        return;
+      }
 
-  const fetchProductByHandle = async (
+      const lineItemsToAdd = [
+        {
+          variantId: variantId,
+          quantity: quantity,
+        },
+      ];
+
+      const updatedCheckout = await client.checkout.addLineItems(
+        checkout.id,
+        lineItemsToAdd
+      );
+      setCheckout(updatedCheckout);
+      setButtonLoader("");
+      toast.success(`Item added to cart!`);
+      console.log("Item added to checkout:", updatedCheckout);
+    } catch (error) {
+      console.error("Error adding item to checkout:", error);
+      setButtonLoader("");
+      toast.error("Error adding item to cart");
+    }
+  }
+
+  async function removeShopifyCheckoutItem(lineItemId: string) {
+    try {
+      if (!checkout) return;
+
+      const updatedCheckout = await client.checkout.removeLineItems(
+        checkout.id,
+        [lineItemId]
+      );
+      setCheckout(updatedCheckout);
+      toast.success("Item removed from cart");
+    } catch (error) {
+      console.error("Error removing item:", error);
+      toast.error("Error removing item from cart");
+    }
+  }
+
+  async function increment(lineItemId: string, quantity: number) {
+    setSelectedqtyOverlay(lineItemId);
+    setQuantityOverlay(true);
+    try {
+      if (!checkout) return;
+
+      const lineItemsToUpdate = [
+        {
+          id: lineItemId,
+          quantity: quantity + 1,
+        },
+      ];
+
+      const updatedCheckout = await client.checkout.updateLineItems(
+        checkout.id,
+        lineItemsToUpdate
+      );
+      setCheckout(updatedCheckout);
+      setQuantityOverlay(false);
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      setQuantityOverlay(false);
+    }
+  }
+
+  async function decrement(lineItemId: string, quantity: number) {
+    if (quantity === 1) {
+      removeShopifyCheckoutItem(lineItemId);
+      return;
+    }
+
+    setSelectedqtyOverlay(lineItemId);
+    setQuantityOverlay(true);
+    try {
+      if (!checkout) return;
+
+      const lineItemsToUpdate = [
+        {
+          id: lineItemId,
+          quantity: quantity - 1,
+        },
+      ];
+
+      const updatedCheckout = await client.checkout.updateLineItems(
+        checkout.id,
+        lineItemsToUpdate
+      );
+      setCheckout(updatedCheckout);
+      setQuantityOverlay(false);
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      setQuantityOverlay(false);
+    }
+  }
+
+  async function removeShopifyDiscount() {
+    try {
+      if (!checkout) return;
+
+      const updatedCheckout = await client.checkout.removeDiscount(checkout.id);
+      setCheckout(updatedCheckout);
+    } catch (error) {
+      console.error("Error removing discount:", error);
+    }
+  }
+
+  async function fetchProducts() {
+    try {
+      const products = await client.product.fetchAll();
+      setProducts(products);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  }
+
+  async function fetchProductByHandle(
     handle: string
-  ): Promise<ShopifyProduct | null> => {
+  ): Promise<ShopifyProduct | null> {
     try {
       const product = await client.product.fetchByHandle(handle);
-      return product as ShopifyProduct;
+      return product;
     } catch (error) {
       console.error("Error fetching product:", error);
       return null;
     }
-  };
-
-  const addItemToCart = async (
-    variantId: string,
-    quantity: number
-  ): Promise<void> => {
-    setButtonLoader("active");
-    const lineItemsToAdd = [
-      {
-        variantId: variantId,
-        quantity: quantity || 1,
-      },
-    ];
-
-    const cart = await client.checkout.addLineItems(
-      checkout.id,
-      lineItemsToAdd
-    );
-    setCheckout(cart as ShopifyCheckout);
-    setButtonLoader("");
-    toast.success("Product Added To Cart!");
-  };
-
-  const removeCartItem = async (productID: string[]): Promise<void> => {
-    const removeItem = await client.checkout.removeLineItems(
-      checkout.id,
-      productID
-    );
-    setCheckout(removeItem as ShopifyCheckout);
-  };
-
-  const incrementQuantity = async (
-    itemId: string,
-    qValue: number
-  ): Promise<void> => {
-    if (qValue > 0) {
-      setSelectedQtyOverlay(itemId);
-      setQuantityOverlay(true);
-      setQuantityValue(qValue);
-      const lineItemsToUpdate = [{ id: itemId, quantity: qValue + 1 }];
-      const updateCartItem = await client.checkout.updateLineItems(
-        checkout.id,
-        lineItemsToUpdate
-      );
-      setCheckout(updateCartItem as ShopifyCheckout);
-    }
-    setQuantityOverlay(false);
-  };
-
-  const decrementQuantity = async (itemId: string): Promise<void> => {
-    setSelectedQtyOverlay(itemId);
-    setQuantityOverlay(true);
-    let updatedQuantity = 0;
-
-    if (checkout.lineItems) {
-      checkout.lineItems.forEach((curElem) => {
-        if (curElem.id === itemId) {
-          updatedQuantity = curElem.quantity - 1;
-        }
-      });
-    }
-
-    const lineItemsToUpdate = [{ id: itemId, quantity: updatedQuantity }];
-
-    const updateCartItem = await client.checkout.updateLineItems(
-      checkout.id,
-      lineItemsToUpdate
-    );
-    setCheckout(updateCartItem as ShopifyCheckout);
-    setQuantityOverlay(false);
-  };
-
-  const addDiscount = async (discountCode: string): Promise<void> => {
-    const addDiscountCode = await client.checkout.addDiscount(
-      checkout.id,
-      discountCode
-    );
-    setCheckout(addDiscountCode as ShopifyCheckout);
-  };
-
-  const removeDiscount = async (checkout: ShopifyCheckout): Promise<void> => {
-    const removeDiscountCode = await client.checkout.removeDiscount(
-      checkout.id
-    );
-    setCheckout(removeDiscountCode as ShopifyCheckout);
-  };
+  }
 
   const contextValue: ShopContextType = {
     products,
     checkout,
-    buttonloader,
+    fetchProducts,
+    addItemToCheckout,
+    fetchProductByHandle,
+    removeShopifyCheckoutItem,
+    removeShopifyDiscount,
+    increment,
+    decrement,
     quantityvalue,
+    setQuantityValue,
     quantityoverlay,
     selectedqtyoverlay,
-    fetchAllShopifyProducts: fetchAllProducts,
-    fetchProductByHandle,
-    addItemToShopifyCart: addItemToCart,
-    removeShopifyCartItem: removeCartItem,
-    increment: incrementQuantity,
-    decrement: decrementQuantity,
-    addShopifyDiscount: addDiscount,
-    removeShopifyDiscount: removeDiscount,
-    setQuantityValue: setQuantityValue,
+    buttonloader,
   };
 
   return (
@@ -172,14 +217,13 @@ function ShopProvider({ children }: ShopProviderProps) {
   );
 }
 
-// Custom hook for using the shop context
-export const useShop = (): ShopContextType => {
+function useShop() {
   const context = useContext(ShopContext);
   if (context === undefined) {
     throw new Error("useShop must be used within a ShopProvider");
   }
   return context;
-};
+}
 
-export { ShopContext };
 export default ShopProvider;
+export { useShop };
