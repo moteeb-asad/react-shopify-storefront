@@ -1,70 +1,155 @@
-# Getting Started with Create React App
+# Shopify React Store - Vite + TypeScript
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern headless e-commerce store built with Shopify Storefront API, React, TypeScript, and Vite.
 
-## Available Scripts
+## 🚀 Tech Stack
 
-In the project directory, you can run:
+- **React 18** - Modern React with hooks
+- **TypeScript** - Type-safe JavaScript
+- **Vite** - Fast build tool and dev server
+- **Shopify Storefront API** - Headless commerce backend
+- **React Router DOM** - Client-side routing
+- **React Context** - State management
+- **Bootstrap 5** - CSS framework
+- **React Toastify** - Toast notifications
 
-### `npm start`
+## 📋 Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js (version 16 or higher)
+- npm or yarn
+- Shopify store with Storefront API access
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🛠️ Installation
 
-### `npm test`
+1. **Clone the repository**
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+   ```bash
+   git clone <repository-url>
+   cd react-shopify-storefront
+   ```
 
-### `npm run build`
+2. **Install dependencies**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+   ```bash
+   npm install
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+3. **Set up environment variables**
+   Create a `.env` file in the root directory:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   ```bash
+   VITE_SHOPIFY_DOMAIN=your-shopify-domain.myshopify.com
+   VITE_SHOPIFY_API=your-storefront-access-token
+   ```
 
-### `npm run eject`
+   Replace `your-shopify-domain` with your actual Shopify domain and `your-storefront-access-token` with your Storefront API access token.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 🚦 Available Scripts
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **`npm run dev`** - Start development server
+- **`npm run build`** - Build for production
+- **`npm run preview`** - Preview production build
+- **`npm run lint`** - Run ESLint
+- **`npm run test`** - Run tests (Vitest)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## 🏗️ Project Structure
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+src/
+├── assets/           # Static assets (images, CSS)
+├── components/       # Reusable React components
+├── context/          # React Context providers
+├── pages/           # Page components
+├── types/           # TypeScript type definitions
+├── App.tsx          # Main App component
+└── main.tsx         # Application entry point
+```
 
-## Learn More
+## 🔧 Configuration
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Vite Configuration
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+The project uses path aliases for cleaner imports:
 
-### Code Splitting
+- `@/*` - src/
+- `@assets/*` - src/assets/
+- `@components/*` - src/components/
+- `@pages/*` - src/pages/
+- `@context/*` - src/context/
+- `@types/*` - src/types/
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### TypeScript Configuration
 
-### Analyzing the Bundle Size
+Strict TypeScript configuration with modern ES features and proper type checking.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🛍️ Features
 
-### Making a Progressive Web App
+- **Product Catalog** - Browse products from your Shopify store
+- **Shopping Cart** - Add/remove items, quantity management
+- **Checkout Integration** - Seamless Shopify checkout
+- **Responsive Design** - Mobile-first responsive UI
+- **Type Safety** - Full TypeScript coverage
+- **Modern Development** - Hot reload with Vite
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 📚 API Integration
 
-### Advanced Configuration
+This project uses the Shopify Storefront API to:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- Fetch products and collections
+- Manage shopping cart
+- Handle checkout process
+- Apply discount codes
 
-### Deployment
+## 🔨 Development
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. **Start the development server**
 
-### `npm run build` fails to minify
+   ```bash
+   npm run dev
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+2. **Open your browser**
+   Navigate to `http://localhost:3000`
+
+3. **Make changes**
+   The app will hot-reload automatically when you save files.
+
+## 🏭 Production Build
+
+1. **Build the application**
+
+   ```bash
+   npm run build
+   ```
+
+2. **Preview the build**
+   ```bash
+   npm run preview
+   ```
+
+The built files will be in the `dist/` directory.
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+If you encounter any issues:
+
+1. Check the console for error messages
+2. Ensure your environment variables are set correctly
+3. Verify your Shopify Storefront API permissions
+4. Create an issue in the repository
+
+---
+
+Built with ❤️ using React, TypeScript, and Vite
